@@ -83,7 +83,7 @@ Decision_Tree_Model<- rpart(classe ~. , data = trainData, method="class")
 Decision_Tree_Prediction <- predict(Decision_Tree_Model, testData, type = "class")
 rpart.plot(Decision_Tree_Model)
 ```
-
+![Decision Tree] (https://raw.githubusercontent.com/michaelfortune/PracticalMachineLearning/master/DecisionTree.png)
 ###Random Forest Model
 I prefer to use Random Forest to create my model as I believe it is more accurate and appropriate for this task.
 ```r
@@ -187,11 +187,12 @@ predict(random_forest_model, testing_data)
 This returns the 20 (A,B,C,D,E) values that need to be output individiually into files for submission. 
 
 ###Conclusion - Accuracy, out of sample error, expected out of sample error and cross validation.
-I created a model using Random Forest as it produced better results. Using this Model, we achieved an accuracy of 0.999 (99.9%) and an out of sample error of 0.0008. The expected out of sample eror is 1-accuracy in the cross validation data. THe cross validation was done by creating two sample sets of data from the training data in the ratio of 66% to 34% for training ang testing subsets respectively. PLease note that in order to reproduce the results, the seed value should be the same and the packages used e.g. RandomForest will need to be downloaded and installed 
+I created a model using Random Forest as it produced better results. Using this Model, we achieved an accuracy of 0.999 (99.9%) and an out of sample error of 0.0008. The expected out of sample eror is 1-accuracy in the cross validation data. THe cross validation was done by creating two sample sets of data from the training data in the ratio of 66% to 34% for training ang testing subsets respectively. PLease note that in order to reproduce the results, the seed value should be the same and the packages used e.g. RandomForest will need to be downloaded and installed. The correlation Matrix Visualisation can be seen below.
 
 My Random Forest Model was run on my original test data (20 observations) and these all appear to be correct. 
 I have created the files using the R code supplied and submitted these files separately as required.  
 
+![Decision Tree] (https://raw.githubusercontent.com/michaelfortune/PracticalMachineLearning/master/CorrMatVis.png)
 
 
 
