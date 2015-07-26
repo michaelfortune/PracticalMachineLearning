@@ -22,9 +22,24 @@ i.e the "classe" variable in the training set. This report describes how I built
 how I used cross-validation and what I believe the out of sample error is and why I made the choices
 that I did. I also used my prediction model to predict 20 test cases that I have submitted separately.    
 
+###Packages
+
+A number of packages need to be included for this project:
+
+```r
+install.packages("randomForest")
+install.packages("rpart.plot")
+
+library(caret)
+library(randomForest)
+library(corrplot)
+library(rpart)
+library(rpart.plot)
+```
+
 ###Data loading and preparation
 The training and test data was provided as two csv files that were downloaded i.e. pml-training.csv 
-and pml-testing.csv. The first task is to replace all the NULL values in the data with NA.
+and pml-testing.csv. The first tasks are to load the data and replace all the NULL values in the data with NA.
 
 ```r
 training_data<-read.csv("pml-training.csv",na.strings=c("NA","NaN","#DIV/0!", "")) 
@@ -50,8 +65,7 @@ cleaned_testing_data <- testing_data
 cleaned_testing_data <- cleaned_testing_data[, unlist(lapply(cleaned_testing_data, function(x) !any(is.na(x))))]
 ```
 
-This reduces the number of variables significantlly for both training and testing fdata i.e. 60 as opposed to 160 
-previously.
+This reduces the number of variables significantlly for both training and testing fdata i.e. 60 as opposed to 160 previously.
 
 ###Create a cross-validation partition set
 Set seed and partition the data into roughly 2/3 and 1/3.
@@ -69,8 +83,6 @@ Decision_Tree_Model<- rpart(classe ~. , data = trainData, method="class")
 Decision_Tree_Prediction <- predict(Decision_Tree_Model, testData, type = "class")
 rpart.plot(Decision_Tree_Model)
 ```
-plot data here
-
 
 ###Random Forest Model
 I prefer to use Random Forest to create my model as I believe it is more accurate and appropriate for this task.
@@ -94,7 +106,7 @@ randomForest(classe~., data=train_subset, importance=TRUE, keep.forest=TRUE)
 
 ```r
 rand_forest_control <- trainControl(method="cv", 7)
-random_forest_model <- train(classe ~ ., data=train_subset, method="rf", trControl=Rand_Forest_Control, ntree=250)
+random_forest_model <- train(classe ~ ., data=train_subset, method="rf", trControl=rand_forest_control, ntree=250)
 ```
 		Random Forest 
 
@@ -118,7 +130,8 @@ random_forest_model <- train(classe ~ ., data=train_subset, method="rf", trContr
 		The final value used for the model was mtry = 31. 
 
 Applying the model to our test data, we can determine the out of sample error. 
-## Random Forest Prediction
+
+###Random Forest Prediction
 ```r
 random_forest_prediction <- predict(random_forest_model, test_subset)
 confusionMatrix(test_subset$classe, random_forest_prediction)
@@ -171,13 +184,10 @@ It is then a simple task to produce the final output. using the predict function
 ```r
 predict(random_forest_model, testing_data)
 ```
-This returns the 20 (A,B,C,D,E) alues that need to be output individiually into files for submission. 
+This returns the 20 (A,B,C,D,E) values that need to be output individiually into files for submission. 
 
-
-
-##Conclusion
-I created a model using Random Forest. Using this Model, we achieved an accuracy of 0.999 (99.9%) and 
-an out of sample error of 0.0008.
+###Conclusion - Accuracy, out of sample error, expected out of sample error and cross validation.
+I created a model using Random Forest as it produced better results. Using this Model, we achieved an accuracy of 0.999 (99.9%) and an out of sample error of 0.0008. The expected out of sample eror is 1-accuracy in the cross validation data. THe cross validation was done by creating two sample sets of data from the training data in the ratio of 66% to 34% for training ang testing subsets respectively. PLease note that in order to reproduce the results, the seed value should be the same and the packages used e.g. RandomForest will need to be downloaded and installed 
 
 My Random Forest Model was run on my original test data (20 observations) and these all appear to be correct. 
 I have created the files using the R code supplied and submitted these files separately as required.  

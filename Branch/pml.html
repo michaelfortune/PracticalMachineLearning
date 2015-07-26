@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -82,21 +82,9 @@ Michael Fortune</code></pre>
 <h3>Project goal</h3>
 <p>The goal of the project is therefore to predict the manner in which the exercises were done i.e the “classe” variable in the training set. This report describes how I built my model, how I used cross-validation and what I believe the out of sample error is and why I made the choices that I did. I also used my prediction model to predict 20 test cases that I have submitted separately.</p>
 </div>
-<div id="packages" class="section level3">
-<h3>Packages</h3>
-<p>A number of packages need to be included for this project:</p>
-<pre class="r"><code>install.packages(&quot;randomForest&quot;)
-install.packages(&quot;rpart.plot&quot;)
-
-library(caret)
-library(randomForest)
-library(corrplot)
-library(rpart)
-library(rpart.plot)</code></pre>
-</div>
 <div id="data-loading-and-preparation" class="section level3">
 <h3>Data loading and preparation</h3>
-<p>The training and test data was provided as two csv files that were downloaded i.e. pml-training.csv and pml-testing.csv. The first tasks are to load the data and replace all the NULL values in the data with NA.</p>
+<p>The training and test data was provided as two csv files that were downloaded i.e. pml-training.csv and pml-testing.csv. The first task is to replace all the NULL values in the data with NA.</p>
 <pre class="r"><code>training_data&lt;-read.csv(&quot;pml-training.csv&quot;,na.strings=c(&quot;NA&quot;,&quot;NaN&quot;,&quot;#DIV/0!&quot;, &quot;&quot;)) 
 testing_data&lt;-read.csv(&quot;pml-testing.csv&quot;,na.strings=c(&quot;NA&quot;,&quot;NaN&quot;,&quot;#DIV/0!&quot;, &quot;&quot;)) 
 
@@ -130,6 +118,7 @@ testing_subset &lt;- cleaned_training_data[-training_partition,] </code></pre>
 Decision_Tree_Prediction &lt;- predict(Decision_Tree_Model, testData, type = &quot;class&quot;)
 rpart.plot(Decision_Tree_Model)</code></pre>
 </div>
+<img src="https://raw.githubusercontent.com/michaelfortune/PracticalMachineLearning/master/DecisionTree.png"> 
 <div id="random-forest-model" class="section level3">
 <h3>Random Forest Model</h3>
 <p>I prefer to use Random Forest to create my model as I believe it is more accurate and appropriate for this task.</p>
@@ -149,7 +138,7 @@ rpart.plot(Decision_Tree_Model)</code></pre>
     D    0    0    7 2404    1 0.0033167496
     E    0    0    0    2 2704 0.0007390983</code></pre>
 <pre class="r"><code>rand_forest_control &lt;- trainControl(method=&quot;cv&quot;, 7)
-random_forest_model &lt;- train(classe ~ ., data=train_subset, method=&quot;rf&quot;, trControl=rand_forest_control, ntree=250)</code></pre>
+random_forest_model &lt;- train(classe ~ ., data=train_subset, method=&quot;rf&quot;, trControl=Rand_Forest_Control, ntree=250)</code></pre>
 <pre><code>    Random Forest 
 
     14718 samples
@@ -170,10 +159,7 @@ random_forest_model &lt;- train(classe ~ ., data=train_subset, method=&quot;rf&q
 
     Accuracy was used to select the optimal model using  the largest value.
     The final value used for the model was mtry = 31. </code></pre>
-<p>Applying the model to our test data, we can determine the out of sample error.</p>
-</div>
-<div id="random-forest-prediction" class="section level3">
-<h3>Random Forest Prediction</h3>
+<p>Applying the model to our test data, we can determine the out of sample error. ## Random Forest Prediction</p>
 <pre class="r"><code>random_forest_prediction &lt;- predict(random_forest_model, test_subset)
 confusionMatrix(test_subset$classe, random_forest_prediction)</code></pre>
 <pre><code>    Confusion Matrix and Statistics
@@ -216,11 +202,11 @@ confusionMatrix(test_subset$classe, random_forest_prediction)</code></pre>
 <pre><code>    [1] 0.0008156607</code></pre>
 <p>It is then a simple task to produce the final output. using the predict function with my model and the test data.</p>
 <pre class="r"><code>predict(random_forest_model, testing_data)</code></pre>
-<p>This returns the 20 (A,B,C,D,E) values that need to be output individiually into files for submission.</p>
+<p>This returns the 20 (A,B,C,D,E) alues that need to be output individiually into files for submission.</p>
 </div>
-<div id="conclusion---accuracy-out-of-sample-error-expected-out-of-sample-error-and-cross-validation." class="section level3">
-<h3>Conclusion - Accuracy, out of sample error, expected out of sample error and cross validation.</h3>
-<p>I created a model using Random Forest as it produced better results. Using this Model, we achieved an accuracy of 0.999 (99.9%) and an out of sample error of 0.0008. The expected out of sample eror is 1-accuracy in the cross validation data. THe cross validation was done by creating two sample sets of data from the training data in the ratio of 66% to 34% for training ang testing subsets respectively. PLease note that in order to reproduce the results, the seed value should be the same and the packages used e.g. RandomForest will need to be downloaded and installed</p>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>I created a model using Random Forest. Using this Model, we achieved an accuracy of 0.999 (99.9%) and an out of sample error of 0.0008.</p>
 <p>My Random Forest Model was run on my original test data (20 observations) and these all appear to be correct. I have created the files using the R code supplied and submitted these files separately as required.</p>
 </div>
 </div>
